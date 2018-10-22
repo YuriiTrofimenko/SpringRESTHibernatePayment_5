@@ -1,0 +1,41 @@
+<div id="shopping-root"></div>
+<script>
+    app.handler(function (param) {
+
+        return function (param) {
+        	
+        	//$('#shopping-root').html('<h1>Shopping page</h1>');
+        	$.ajax({
+                url: "api/category/get-all"
+                , type: 'GET'
+            }).done(function (resp) {
+
+            	var template;
+                if (resp != undefined && resp.status == 'success') {
+
+                    //console.log(resp.data);
+                	//Готовим шаблон с местами для подстановки данных
+                	template = Hogan.compile(
+                			'<ul>'
+	                            + '{{#data}}'
+		                            + '<li>'
+		                            	+ '<a id="{{id}}" href="#!"/>{{name}}</a>'
+		                            + '</li>'
+	                            + '{{/data}}'
+                            + '</ul>'
+                        );
+                } else {
+
+                	template = Hogan.compile(
+                			'<span>Error. Status: {{status}}</span>'
+                        );
+                }
+              	//Заполняем шаблон данными и помещаем на веб-страницу
+                $('#shopping-root').html(template.render(resp));
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+
+            	$('#shopping-root').html('<span>Error. Status: ' + jqXHR + '</span>');
+            });
+        };
+    });
+</script>
