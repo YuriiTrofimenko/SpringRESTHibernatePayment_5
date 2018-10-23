@@ -3,13 +3,17 @@ package org.tyaa.spring.rest.hibernate.payment.dao;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.tyaa.spring.rest.hibernate.payment.dao.interfaces.IGeneralizedDAO;
-import org.tyaa.spring.rest.hibernate.payment.entity.Category;
+import org.tyaa.spring.rest.hibernate.payment.entity.Payment;
 
 public abstract class AbstractHibernateGeneralizedDAO<T>
 	implements IGeneralizedDAO<T>{
@@ -56,7 +60,19 @@ public abstract class AbstractHibernateGeneralizedDAO<T>
 
 	@Override
 	public List<T> getAll() {
-		// TODO Auto-generated method stub
-		return getSession().createCriteria(Category.class).list();
+		
+		@SuppressWarnings("unchecked")
+		Class<T> entityBeanType =
+				((Class<T>) ((ParameterizedType) getClass()
+						.getGenericSuperclass()).getActualTypeArguments()[0]);
+		
+		CriteriaBuilder builder =
+				getSession().getCriteriaBuilder();
+		CriteriaQuery<T> criteriaQuery =
+				builder.createQuery(entityBeanType);
+		Root<T> root = criteriaQuery.from(entityBeanType);
+		criteriaQuery.select(root);
+		Query<T> query = getSession().createQuery(criteriaQuery);
+		return query.list();
 	}
 }

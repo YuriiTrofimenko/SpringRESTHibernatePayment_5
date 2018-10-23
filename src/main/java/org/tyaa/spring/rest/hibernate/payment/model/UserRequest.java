@@ -1,9 +1,5 @@
 package org.tyaa.spring.rest.hibernate.payment.model;
 
-import java.util.List;
-
-import org.tyaa.spring.rest.hibernate.payment.entity.Payment;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

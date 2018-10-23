@@ -1,12 +1,11 @@
 package org.tyaa.spring.rest.hibernate.payment.dao;
 
-import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-import org.tyaa.spring.rest.hibernate.payment.entity.Category;
-import org.tyaa.spring.rest.hibernate.payment.entity.Payment;
-import org.tyaa.spring.rest.hibernate.payment.entity.Role;
 import org.tyaa.spring.rest.hibernate.payment.entity.User;
 
 @Repository
@@ -15,10 +14,16 @@ public class UserHibernateDAO
 
 	public User getUserByName(String _userName) {
 		User user = null;
-		Object userObject =
-				getSession().createCriteria(User.class)
-					.add(Restrictions.eq("name", _userName))
-					.uniqueResult();
+		
+		CriteriaBuilder builder =
+				getSession().getCriteriaBuilder();
+		CriteriaQuery<User> criteriaQuery =
+				builder.createQuery(User.class);
+		Root<User> root = criteriaQuery.from(User.class);
+		criteriaQuery.where(builder.equal(root.get("name"), _userName));
+		Query<User> query = getSession().createQuery(criteriaQuery);
+		
+		Object userObject = query.uniqueResult();
 		if(userObject != null) {
 			user = (User)userObject;
 		}

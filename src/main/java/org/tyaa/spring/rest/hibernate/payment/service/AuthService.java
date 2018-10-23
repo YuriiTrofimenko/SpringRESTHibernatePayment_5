@@ -1,21 +1,16 @@
 package org.tyaa.spring.rest.hibernate.payment.service;
 
-import java.util.List;
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.tyaa.spring.rest.hibernate.payment.dao.CategoryHibernateDAO;
 import org.tyaa.spring.rest.hibernate.payment.dao.RoleHibernateDAO;
 import org.tyaa.spring.rest.hibernate.payment.dao.UserHibernateDAO;
-import org.tyaa.spring.rest.hibernate.payment.entity.Category;
 import org.tyaa.spring.rest.hibernate.payment.entity.Role;
 import org.tyaa.spring.rest.hibernate.payment.entity.User;
 import org.tyaa.spring.rest.hibernate.payment.model.AbstractResponse;
 import org.tyaa.spring.rest.hibernate.payment.model.AccountInfo;
 import org.tyaa.spring.rest.hibernate.payment.model.AccountInfoResponse;
-import org.tyaa.spring.rest.hibernate.payment.model.CategoryResponse;
 import org.tyaa.spring.rest.hibernate.payment.model.UserRequest;
 
 @Service
