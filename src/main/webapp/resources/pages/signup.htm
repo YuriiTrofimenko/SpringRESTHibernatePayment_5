@@ -34,7 +34,6 @@
 <script>
     app.handler(function () {
 
-        //console.log(preloaderHide);
         return function () {
 
             $('#signup-form').unbind("click");
@@ -45,30 +44,25 @@
                     name : $("#signup-form #login").val(),
                     password :  $("#signup-form #password").val()
                 };
-                console.log(formData);
+                //
                 $.ajax({
                     url: "api/auth/create/user"
                     , data: JSON.stringify(formData)
                     , type: "POST"
                     , dataType : "json"
                     , contentType : "application/json"
-                    /*, headers: { 
-                        "Accept": "application/json",
-                        "Content-Type": "application/json" 
-                    }*/
                 }).done(function (resp) {
 
-                    if (resp.error !== undefined && resp.error !== "") {
+                    if (resp.status !== undefined && resp.status === "error") {
 
-                        alert("error: " + resp.error);
+                        alert("Error: " + resp.status);
                     } else {
 
-                        //alert("Your data is: " + resp.data[0].login + "; " + resp.data[0].password);
                         $("#signup-form")[0].reset();
                     }
                 }).fail(function () {
 
-                    alert("error");
+                    alert("Fatal error");
                 });
             });
             setTimeout(preloaderHide, 500);

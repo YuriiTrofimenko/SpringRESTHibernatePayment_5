@@ -6,6 +6,28 @@
         return function (param) {
         	
         	$('#home-root').html('<h1>Home page</h1>');
+        	
+        	if (param === 'out') {
+
+                $.ajax({
+                    url: "api/auth/signout"
+                    , type: 'POST'
+                }).done(function (resp) {
+
+                    if (resp.status !== undefined && resp.status === "error") {
+
+                    	alert("Error: " + resp.status);
+                    } else {
+
+                        onSignOut();
+                        window.location = "#!home";
+                    }
+                }).fail(function () {
+
+                    alert("Fatal error");
+                });
+            }
+        	setTimeout(preloaderHide, 500);
         };
     });
 </script>

@@ -7,13 +7,15 @@ var preloaderShow = function () {
 }
 
 //
-var onSignIn = function (login) {
+var onSignIn = function (accountInfo) {
 
-    $("a[href='#!home:out']").text('Signout (' + login + ')');
+    $("a[href='#!home:out']").text('Signout (' + accountInfo.userName + ')');
     $("a[href='#!home:out']").css('display', 'block');
 
     $("a[href='#!signin']").css('display', 'none');
     $("a[href='#!signup']").css('display', 'none');
+    
+    $("a[href='#!cart']").css('display', 'block');
 }
 
 var onSignOut = function () {
@@ -23,8 +25,10 @@ var onSignOut = function () {
 
     $("a[href='#!signin']").css('display', 'block');
     $("a[href='#!signup']").css('display', 'block');
+    
+    $("a[href='#!cart']").css('display', 'none');
 
-    $("section#!admin").html('');
+    $("section[id='#!admin']").html('');
 }
 
 $(document).ready(function () {

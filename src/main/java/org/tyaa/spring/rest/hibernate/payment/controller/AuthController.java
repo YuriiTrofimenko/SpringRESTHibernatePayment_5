@@ -39,10 +39,10 @@ public class AuthController {
 	public AccountInfoResponse signin(@RequestBody UserRequest _userRequest) {
 		AccountInfoResponse response =
 				service.getAccountInfoResponse(_userRequest);
-		if (response.getAccountInfo() != null) {
+		if (response.getData() != null) {
 			httpSession.setAttribute(
 					"ACCOUNT_INFO"
-					, ((AccountInfoResponse)response).getAccountInfo()
+					, ((AccountInfoResponse)response).getData()
 				);
 		}
 		return response;

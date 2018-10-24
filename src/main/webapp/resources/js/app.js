@@ -1,25 +1,25 @@
-// Single application framework
+// Single Page Application Framework
 (function ($, window) {
-    //Ìàññèâ äëÿ ôóíêöèé-êîíòðîëëåðîâ ïðåäñòàâëåíèé ñòðàíèö
+    //Object-list of js controllers handlers
     var pageHandlers = {};
-    //Äåðåâî òåêóùåé ñòðàíèöû
+    //Current page name
     var currentPage;
 
-    // show the "page" with optional parameter
+    //Show view by page name with optional parameter
     function show(pageName, param) {
 
-        //preloaderShow();
-        //console.log($(".loader"));
-        // invoke page handler
+        preloaderShow();
+        //Invoke current page handler
         var ph = pageHandlers[pageName];
         if (ph) {
             var $page = $("section#" + pageName);
             ph.call($page.length ? $page[0] : null, param); // call "page" handler
         }
-        // activate the page  
-        //$("nav a.active, ul.sidenav a.active").removeClass("active");
-        //$("a[href='!#" + pageName + "']").addClass("active");
-
+        //Activate the page
+        //Step 1: navbar item
+        $("nav a.active, ul.sidenav a.active").removeClass("active");
+        $("a[href='!#" + pageName + "']").addClass("active");
+        //Step 2: section
         $(document.body).attr("page", pageName)
             .find("section").fadeOut(600).removeClass("active")
             .filter("section#" + pageName).addClass("active").fadeIn(600);

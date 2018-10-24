@@ -38,28 +38,30 @@
         return function (param) {
 
             //console.log(preloaderHide);
-            $('#signin-form').unbind("click");
+            $('#signin-form').unbind("submit");
             $('#signin-form').submit(function (ev) {
 
                 ev.preventDefault();
-                var formData = $(this).serialize();
-                //console.log(formData);
+                var formData = {
+                        name : $("#signin-form #login").val(),
+                        password : $("#signin-form #password").val()
+                    };
                 $.ajax({
-                    url: "/api/auth?action=signin"
-                    , data: formData
-                    , type: 'GET'
+                    url: "api/auth/signin"
+                    , data: JSON.stringify(formData)
+                    , type: 'POST'
+                   	, dataType : "json"
+                    , contentType : "application/json"
                 }).done(function (resp) {
 
-                    if (resp.error != "") {
+                    if (resp.status !== undefined && resp.status === "error") {
 
-                        alert("error: " + resp.error);
+                    	alert("Error: " + resp.status);
                     } else {
 
-                        //alert("Your data is: " + resp.data[0]);
                         $('#signin-form')[0].reset();
-                        onSignIn(resp.data[0]);
-                        window.location = "/#home";
-                        //window.location = "/api/auth?pagename=home&param=no";
+                        onSignIn(resp.data);
+                        window.location = "#!home";
                     }
                 }).fail(function () {
 

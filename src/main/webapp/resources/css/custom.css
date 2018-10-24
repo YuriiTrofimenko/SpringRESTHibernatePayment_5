@@ -47,6 +47,6 @@ section.active {
     content: "<div class='divider'></div>" !important;
 }
 
-/*.card:after {
-    content: "<div class='divider'></div>";
-}*/
+.cart{
+	display: none;
+}
