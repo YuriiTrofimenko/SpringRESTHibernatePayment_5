@@ -28,7 +28,7 @@ var onSignOut = function () {
     
     $("a[href='#!cart']").css('display', 'none');
 
-    $("section[id='#!admin']").html('');
+    $("#admin").html('');
 }
 
 $(document).ready(function () {

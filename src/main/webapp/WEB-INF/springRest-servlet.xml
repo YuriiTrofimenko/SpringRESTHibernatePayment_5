@@ -10,18 +10,16 @@
 	<context:component-scan base-package="org.tyaa.spring.rest.hibernate.payment"></context:component-scan>
 	<mvc:annotation-driven />
 	<tx:annotation-driven />
+        <mvc:resources mapping="/views/**" location="/views/" />
 	<mvc:resources mapping = "/resources/**" location = "/resources/" />
         <mvc:interceptors>
-            <bean class="org.tyaa.spring.rest.hibernate.payment.servletfilter.SecurityFilter"/>
+            <mvc:interceptor>
+                <mvc:mapping path="/**/admin/**" />
+                <bean class="org.tyaa.spring.rest.hibernate.payment.servletfilter.SecurityFilter"/>
+            </mvc:interceptor>
         </mvc:interceptors>
-<!--	<mvc:interceptors>
-            <mvc:interceptor>
-                <mvc:mapping path="/api/*/create/*" />
-                <bean class="org.tyaa.spring.rest.hibernate.payment.servletfilter.SecurityFilter"/>
-            </mvc:interceptor>
-            <mvc:interceptor>
-                <mvc:mapping path="/resources/**" />
-                <bean class="org.tyaa.spring.rest.hibernate.payment.servletfilter.SecurityFilter"/>
-            </mvc:interceptor>
-	</mvc:interceptors>-->
+        <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+            <property name="prefix" value="/views/"/>
+            <property name="suffix" value=".htm"/>
+	</bean>
 </beans>

@@ -12,7 +12,7 @@ import org.tyaa.spring.rest.hibernate.payment.model.PaymentResponse;
 import org.tyaa.spring.rest.hibernate.payment.service.PaymentService;
 
 @RestController
-@RequestMapping("/paymentResource")
+@RequestMapping("/api/paymentResource")
 public class PaymentController {
 
 	@Autowired

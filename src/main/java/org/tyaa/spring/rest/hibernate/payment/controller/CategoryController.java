@@ -11,7 +11,7 @@ import org.tyaa.spring.rest.hibernate.payment.model.CategoryResponse;
 import org.tyaa.spring.rest.hibernate.payment.service.CategoryService;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/api/category")
 public class CategoryController {
 
 	@Autowired

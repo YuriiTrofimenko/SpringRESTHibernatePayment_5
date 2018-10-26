@@ -15,7 +15,7 @@ import org.tyaa.spring.rest.hibernate.payment.model.UserRequest;
 import org.tyaa.spring.rest.hibernate.payment.service.AuthService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
 	@Autowired
