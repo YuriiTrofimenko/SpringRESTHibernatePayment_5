@@ -16,29 +16,35 @@ public class SecurityFilter implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
-		// Avoid a redirect loop for some urls
-		if (request.getRequestURI().contains("paymentResource")) {
-			AccountInfo accountInfo = (AccountInfo) request.getSession().getAttribute("ACCOUNT_INFO");
-			if (accountInfo == null) {
-				ObjectMapper jsonMapper = new ObjectMapper();
-				// response.sendRedirect("/sample-interc/");
-				response.setContentType("application/json");
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().write(jsonMapper.writeValueAsString(new AbstractResponse<Object>() {
-					@Override
-					public String getStatus() {
-						return "error";
-					}
+            // Avoid a redirect loop for some urls
+            //if (request.getRequestURI().contains("paymentResource")) {
+                    AccountInfo accountInfo =
+                            (AccountInfo) request.getSession()
+                                    .getAttribute("ACCOUNT_INFO");
+                    if (accountInfo == null) {
+                        ObjectMapper jsonMapper = new ObjectMapper();
+                        // response.sendRedirect("/sample-interc/");
+                        response.setContentType("application/json");
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.getWriter().write(
+                            jsonMapper.writeValueAsString(
+                                new AbstractResponse<Object>() {
+                                    @Override
+                                    public String getStatus() {
+                                        return "error";
+                                    }
 
-					@Override
-					public String getMessage() {
-						return "sign in first";
-					}
-				}));
-				return false;
-			}
-		}
-		return true;
+                                    @Override
+                                    public String getMessage() {
+                                        return "sign in first";
+                                    }
+                                }
+                            )
+                        );
+                        return false;
+                    }
+            //}
+            return true;
 	}
 
 	@Override

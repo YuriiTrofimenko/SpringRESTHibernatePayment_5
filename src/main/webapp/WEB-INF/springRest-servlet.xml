@@ -11,7 +11,17 @@
 	<mvc:annotation-driven />
 	<tx:annotation-driven />
 	<mvc:resources mapping = "/resources/**" location = "/resources/" />
-	<mvc:interceptors>
-	    <bean class="org.tyaa.spring.rest.hibernate.payment.servletfilter.SecurityFilter"/>
-	</mvc:interceptors>
+        <mvc:interceptors>
+            <bean class="org.tyaa.spring.rest.hibernate.payment.servletfilter.SecurityFilter"/>
+        </mvc:interceptors>
+<!--	<mvc:interceptors>
+            <mvc:interceptor>
+                <mvc:mapping path="/api/*/create/*" />
+                <bean class="org.tyaa.spring.rest.hibernate.payment.servletfilter.SecurityFilter"/>
+            </mvc:interceptor>
+            <mvc:interceptor>
+                <mvc:mapping path="/resources/**" />
+                <bean class="org.tyaa.spring.rest.hibernate.payment.servletfilter.SecurityFilter"/>
+            </mvc:interceptor>
+	</mvc:interceptors>-->
 </beans>
