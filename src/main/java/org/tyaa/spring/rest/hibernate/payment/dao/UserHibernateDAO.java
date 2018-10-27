@@ -23,11 +23,9 @@ public class UserHibernateDAO
 		criteriaQuery.where(builder.equal(root.get("name"), _userName));
 		Query<User> query = getSession().createQuery(criteriaQuery);
 		
-		Object userObject = query.uniqueResult();
-		if(userObject != null) {
-			user = (User)userObject;
-		}
-		return user;
+		User userObject = query.uniqueResult();
+		
+		return userObject;
 
 	}
 }
