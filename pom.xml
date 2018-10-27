@@ -2,10 +2,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.tyaa.springresthibernatepayment</groupId>
-    <artifactId>SpringRESTHibernatePayment_4</artifactId>
+    <artifactId>SpringRESTHibernatePayment_5</artifactId>
     <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <name>SpringRESTHibernatePayment_4 Maven Webapp</name>
+    <name>SpringRESTHibernatePayment_5 Maven Webapp</name>
     <url>http://maven.apache.org</url>
 	
     <properties>
@@ -93,7 +93,7 @@
 
     </dependencies>
     <build>
-        <finalName>SpringRESTHibernatePayment_4</finalName>
+        <finalName>SpringRESTHibernatePayment_5</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
