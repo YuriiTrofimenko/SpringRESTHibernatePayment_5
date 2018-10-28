@@ -1,4 +1,7 @@
-﻿<div id="categories-edit">
+<!-- Представления разных разделов администрирования в одном файле -->
+<!-- TODO: page not found view n json format for sending the data -->
+<!-- Раздел администрирования категорий товаров -->
+<div id="categories-edit">
     <div class="row">
         <div class="col s3">
             <div class="card grey lighten-2">
@@ -48,6 +51,7 @@
         </div>
     </div>
 </div>
+<!-- Раздел администрирования товаров -->
 <div id="articles-edit">
     <div class="row">
         <div class="col s12 m4 l4 xl4">
@@ -130,30 +134,29 @@
     </div>
 </div>
 <script>
-    app.handler(function () {
+    app.handler(function (param) {
 
-        //console.log(preloaderHide);
-        return function () {
+        return function (param) {
 
-            /*console.log(param);
+            //Выбор контроллерной логики в зависимости от параметра
+            //адресной строки
             switch (param) {
+                //Логика администрирования категорий
                 case "categories": {
                     $('#categories-edit').css('display', 'block');
                     $('#articles-edit').css('display', 'none');
-
+                    //Заполнение таблицы категорий
                     var populateCategoriesTable = function () {
-
+                        //Асинхронный запрос на сервер для получения
+                        //данных о категориях
                         $.ajax({
-                            url: "/api/categories/get-all"
+                            url: "api/category/get-all"
                             , type: 'GET'
                         }).done(function (resp) {
 
-                            if (resp.error != "") {
+                            var template;
+                            if (resp !== undefined && resp.status === 'success') {
 
-                                alert("error: " + resp.error);
-                            } else {
-
-                                //console.log(resp);
                                 var template = Hogan.compile(
                                     '<table class="table">'
                                     + '<thead>'
@@ -189,10 +192,23 @@
                                     //(оно могло быть ранее установлено на одну из строк)
                                     $(this).addClass("selectedTableRow").siblings().removeClass("selectedTableRow");
                                 });
-                            }
-                        }).fail(function () {
+                            } else {
 
-                            alert("error");
+                                template = Hogan.compile(
+                			'<span>Error. Status: {{status}}</span>'
+                                    );
+                                //Заполняем шаблон сообщением об ошибке
+                                //и помещаем на веб-страницу
+                                $('#categories-container').html(template.render(resp));
+                            }
+                        }).fail(function (xhr, status, error) {
+
+                            template = Hogan.compile(
+                                    '<span>Error: ' + error + '</span>'
+                                );
+                            //Заполняем шаблон сообщением об ошибке
+                            //и помещаем на веб-страницу
+                            $('#categories-container').html(template.render(resp));
                         });
                     }
 
@@ -205,21 +221,28 @@
 
                             ev.preventDefault();
                             $.ajax({
-                                url: "api/categories/add"
-                                , data: { 'catname': $('#categories-edit input#name').val() }
-                                , type: 'GET'
+                                url: "api/category/create"
+                                , data: { 'name' : $('#categories-edit input#name').val() }
+                                , type: 'POST'
                             }).done(function (resp) {
 
-                                if (resp.error != "") {
-
-                                    alert("error: " + resp.error);
-                                } else {
+                                var template;
+                                if (resp !== undefined && resp.status === 'success') {
 
                                     populateCategoriesTable();
-                                }
-                            }).fail(function () {
+                                } else {
 
-                                alert("error");
+                                    template = Hogan.compile(
+                			'<span>Error. Status: {{status}}</span>'
+                                    );
+                                    var errorText = template.render(resp);
+                                }
+                            }).fail(function (xhr, status, error) {
+
+                                template = Hogan.compile(
+                			'<span>Error. Status: ' + error + '</span>'
+                                    );
+                                var errorText = template.render({});
                             });
                         }
                     );
@@ -229,30 +252,37 @@
                     $('#deleteCategory').click(function (ev) {
 
                         ev.preventDefault();
-                        var catId = $('#categories-edit .selectedTableRow').find('th').text();
-                        console.log(catId);
+                        var catId =
+                            $('#categories-edit .selectedTableRow').find('th').text();
+                        var template;
                         $.ajax({
-                            url: "api/categories/delete"
-                            , data: { 'catid': catId }
-                            , type: 'GET'
+                            url: "api/category/delete"
+                            , data: { 'id': catId }
+                            , type: 'POST'
                         }).done(function (resp) {
 
-                            if (resp.error != "") {
-
-                                alert("error: " + resp.error);
-                            } else {
+                            if (resp !== undefined && resp.status === 'success') {
 
                                 populateCategoriesTable();
+                            } else {
+
+                                template = Hogan.compile(
+                                    '<span>Error. Status: {{status}}</span>'
+                                );
+                                var errorText = template.render(resp);
                             }
                         }).fail(function () {
 
-                            alert("error");
+                            template = Hogan.compile(
+                                    '<span>Error. Status: ' + error + '</span>'
+                                );
+                            var errorText = template.render({});
                         });
                     });
 
                     break;
                 }
-                case "articles": {
+                /*case "articles": {
                     $('#articles-edit').css('display', 'block');
                     $('#categories-edit').css('display', 'none');
 
@@ -449,9 +479,9 @@
                     });
 
                     break;
-                }
+                }*/
                 default:
-            }*/
+            }
             setTimeout(preloaderHide, 500);
         };
     });

@@ -11,7 +11,7 @@
             }).done(function (resp) {
 
             	var template;
-                if (resp != undefined && resp.status == 'success') {
+                if (resp !== undefined && resp.status === 'success') {
 
                     //console.log(resp.data);
                 	//Готовим шаблон с местами для подстановки данных

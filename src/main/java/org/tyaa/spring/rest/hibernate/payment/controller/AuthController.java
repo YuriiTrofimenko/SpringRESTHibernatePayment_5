@@ -13,6 +13,7 @@ import org.tyaa.spring.rest.hibernate.payment.model.AccountInfo;
 import org.tyaa.spring.rest.hibernate.payment.model.AccountInfoResponse;
 import org.tyaa.spring.rest.hibernate.payment.model.UserRequest;
 import org.tyaa.spring.rest.hibernate.payment.service.AuthService;
+import org.tyaa.spring.rest.hibernate.payment.servletfilter.SecurityFilter;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -31,7 +32,7 @@ public class AuthController {
 
 	@PostMapping("/create/user")
 	public AbstractResponse<Object> createUser(@RequestBody UserRequest _userRequest) {
-                _userRequest.setRole_id(1);
+                _userRequest.setRole_id(SecurityFilter.CUSTOMER_ROLE_ID);
 		return service.createUser(_userRequest);
 	}
 	

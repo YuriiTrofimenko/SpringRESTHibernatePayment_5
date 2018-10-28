@@ -11,6 +11,9 @@ import org.tyaa.spring.rest.hibernate.payment.model.AccountInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SecurityFilter implements HandlerInterceptor {
+    
+        public static final Integer ADMIN_ROLE_ID = 1;
+        public static final Integer CUSTOMER_ROLE_ID = 2;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -21,7 +24,9 @@ public class SecurityFilter implements HandlerInterceptor {
                     AccountInfo accountInfo =
                             (AccountInfo) request.getSession()
                                     .getAttribute("ACCOUNT_INFO");
-                    if (accountInfo == null) {
+                    if (accountInfo == null
+                            || accountInfo.roleId == null
+                            || !accountInfo.roleId.equals(ADMIN_ROLE_ID)) {
                         ObjectMapper jsonMapper = new ObjectMapper();
                         // response.sendRedirect("/sample-interc/");
                         response.setContentType("application/json");
@@ -36,7 +41,7 @@ public class SecurityFilter implements HandlerInterceptor {
 
                                     @Override
                                     public String getMessage() {
-                                        return "sign in first";
+                                        return "sign in as admin first";
                                     }
                                 }
                             )

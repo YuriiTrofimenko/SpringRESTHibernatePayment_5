@@ -23,7 +23,19 @@ public class CategoryService {
 		CategoryResponse response = new CategoryResponse();
 		response.setStatus("success");
 		response.setMessage(
-			String.format("Категория %s создана", category.getName())
+			String.format("Category %s created", category.getName())
+		);
+		return response;
+	}
+        
+        public CategoryResponse delete(Category category) {
+		
+                category = dao.get(category.getId());
+		dao.remove(category);
+		CategoryResponse response = new CategoryResponse();
+		response.setStatus("success");
+		response.setMessage(
+			String.format("Category %s deleted", category.getName())
 		);
 		return response;
 	}

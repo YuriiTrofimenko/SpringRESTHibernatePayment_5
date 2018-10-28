@@ -18,12 +18,17 @@ public class CategoryController {
 	private CategoryService service;
 
 	@PostMapping("/create")
-	public CategoryResponse payInstant(@RequestBody Category category) {
-		return service.create(category);
+	public CategoryResponse create(@RequestBody Category category) {
+            return service.create(category);
+	}
+        
+        @PostMapping("/delete")
+	public CategoryResponse delete(@RequestBody Category category) {
+            return service.delete(category);
 	}
 
 	@GetMapping("/get-all")
 	public CategoryResponse getAll() {
-		return service.getAll();
+            return service.getAll();
 	}
 }
