@@ -67,4 +67,13 @@ public class ProductService {
         response.setData(products);
         return response;
     }
+    
+    public ProductResponse getFiltered() {
+
+        ProductResponse response = new ProductResponse();
+        List<Product> products = productHibernateDAO.getAll();
+        response.setStatus("success");
+        response.setData(products);
+        return response;
+    }
 }

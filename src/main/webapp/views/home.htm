@@ -5,7 +5,10 @@
 
         return function (param) {
         	
-        	$('#home-root').html('<h1>Home page</h1>');
+        	$('#home-root').html(
+                        '<h1>Home page</h1>'
+                        + '<a href="#!shopping">Go Shopping!</a>'
+                    );
         	
         	if (param === 'out') {
 
