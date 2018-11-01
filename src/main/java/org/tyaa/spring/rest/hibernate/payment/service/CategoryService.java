@@ -28,9 +28,9 @@ public class CategoryService {
 		return response;
 	}
         
-        public CategoryResponse delete(Category category) {
+        public CategoryResponse delete(int categoryId) {
 		
-                category = dao.get(category.getId());
+                Category category = dao.get(categoryId);
 		dao.remove(category);
 		CategoryResponse response = new CategoryResponse();
 		response.setStatus("success");

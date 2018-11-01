@@ -2,9 +2,11 @@ package org.tyaa.spring.rest.hibernate.payment.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.tyaa.spring.rest.hibernate.payment.entity.Category;
 import org.tyaa.spring.rest.hibernate.payment.model.CategoryResponse;
@@ -22,9 +24,9 @@ public class CategoryController {
             return service.create(category);
 	}
         
-        @PostMapping("/delete")
-	public CategoryResponse delete(@RequestBody Category category) {
-            return service.delete(category);
+        @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+	public CategoryResponse delete(@PathVariable("id") int id) {
+            return service.delete(id);
 	}
 
 	@GetMapping("/get-all")

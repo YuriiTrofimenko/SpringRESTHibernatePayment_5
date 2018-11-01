@@ -8,12 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.tyaa.spring.rest.hibernate.payment.entity.Category;
-import org.tyaa.spring.rest.hibernate.payment.entity.Product;
-import org.tyaa.spring.rest.hibernate.payment.model.CategoryResponse;
 import org.tyaa.spring.rest.hibernate.payment.model.ProductRequest;
 import org.tyaa.spring.rest.hibernate.payment.model.ProductResponse;
-import org.tyaa.spring.rest.hibernate.payment.service.CategoryService;
 import org.tyaa.spring.rest.hibernate.payment.service.ProductService;
 
 @RestController
@@ -26,7 +22,7 @@ public class ProductController {
 	@PostMapping("/create")
 	public ProductResponse create(@RequestBody ProductRequest productRequest) {
             //TODO
-            return service.create(new Product());
+            return service.create(productRequest);
 	}
         
         @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)

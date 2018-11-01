@@ -260,11 +260,8 @@
                             $('#categories-edit .selectedTableRow').find('th').text();
                         var template;
                         $.ajax({
-                            url: "api/category/delete"
-                            , data: JSON.stringify({ 'id': catId })
-                            , type: 'POST'
-                           	, dataType : "json"
-                            , contentType : "application/json"
+                            url: "api/category/delete/" + catId
+                            , type: 'DELETE'
                         }).done(function (resp) {
 
                             if (resp !== undefined && resp.status === 'success') {
@@ -319,8 +316,8 @@
                                         + '{{#data}}'
                                         + '<tr>'
                                         + '<th scope="row">{{id}}</th>'
-                                        + '<td>{{title}}</td>'
-                                        + '<td>{{Category.name}}</td>'
+                                        + '<td>{{name}}</td>'
+                                        + '<td>{{category.name}}</td>'
                                         + '<td>{{price}}</td>'
                                         + '<td>{{quantity}}</td>'
                                         + '</tr>'
@@ -375,7 +372,7 @@
                             url: 'api/category/get-all',
                             dataType: 'json',
                             cache: false
-                        }).done(function (responseText, textStatus, jqXHR) {
+                        }).done(function (resp, textStatus, jqXHR) {
 
                         	var template;
                         	if (resp !== undefined && resp.status === 'success') {
@@ -391,7 +388,7 @@
 	                                + '</select>'
 	                            );
 	                            //Заполняем шаблон данными и помещаем на веб-страницу
-	                            $('#category-select').html(template.render(responseText));
+	                            $('#category-select').html(template.render(resp));
 	                            $('#category-select select').formSelect();
                         	} else {
 
@@ -435,6 +432,7 @@
                     });
 
                     //New product form submit handler
+                    //console.log($('#products-edit button[type=submit]'));
                     $('#products-edit button[type=submit]').unbind("click");
                     $('#products-edit button[type=submit]').click(
 
@@ -442,20 +440,24 @@
 
                             ev.preventDefault();
 
-                            var formData = $('#products-edit form').serializeArray();
-                            //
+                            //var formData = $('#products-edit form').serializeArray();
+                            //var formData = $('#products-edit form').serialize();
+                            
                             var selectedCategoryIndex =
                                 $('#products-edit form #category-select li.selected').index();
                             var selectedCategoryId =
                                 $('#products-edit form #category-select select option')
                                     .eq(selectedCategoryIndex)
                                     .val();
-                            formData.push({ name: 'categoryId', value: selectedCategoryId });
-                            formData.push({ name: 'image', value: imageBase64 });
                             
-                            formData[0].value = encodeURIComponent(formData[0].value);
-                            formData[1].value = encodeURIComponent(formData[1].value);
-
+                            var formData = {
+                                'title' : encodeURIComponent($('#products-edit form #title').val())
+                                , 'description' : encodeURIComponent($('#products-edit form #description').val())
+                                , 'price' : $('#products-edit form #price').val()
+                                , 'quantity' : $('#products-edit form #quantity').val()
+                                , 'categoryId' : selectedCategoryId
+                                , 'image' : imageBase64
+                            };
                             //
                             $.ajax({
                                 url: "api/product/create"

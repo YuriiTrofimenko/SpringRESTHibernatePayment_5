@@ -35,13 +35,17 @@ $(document).ready(function () {
 
     $('.sidenav').sidenav();
     //$('.modal').modal();
-    /*$.get("/api/auth/checkauth")
+    $.get("api/auth/check")
         .done(function (resp) {
 
-            if (resp != null) {
+            if (resp !== undefined && resp.status === 'success') {
 
-                onSignIn(resp);
+                if (resp.data !== undefined) {
+                    onSignIn(resp.data);
+                }
             }
         })
-        .fail(function () { alert("Fatal error"); });*/
+        .fail(function (xhr, status, error) {
+            alert("Fatal error: " + error);
+        });
 });
