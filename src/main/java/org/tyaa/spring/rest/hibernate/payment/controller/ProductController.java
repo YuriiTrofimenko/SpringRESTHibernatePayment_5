@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.tyaa.spring.rest.hibernate.payment.model.ProductFilter;
 import org.tyaa.spring.rest.hibernate.payment.model.ProductRequest;
 import org.tyaa.spring.rest.hibernate.payment.model.ProductResponse;
 import org.tyaa.spring.rest.hibernate.payment.service.ProductService;
@@ -21,7 +22,6 @@ public class ProductController {
 
 	@PostMapping("/create")
 	public ProductResponse create(@RequestBody ProductRequest productRequest) {
-            //TODO
             return service.create(productRequest);
 	}
         
@@ -33,5 +33,10 @@ public class ProductController {
 	@GetMapping("/get-all")
 	public ProductResponse getAll() {
             return service.getAll();
+	}
+        
+        @GetMapping("/get-filtered")
+	public ProductResponse getFiltered(@RequestBody ProductFilter filter) {
+            return service.getFiltered(filter);
 	}
 }

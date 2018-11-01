@@ -34,7 +34,7 @@ var onSignOut = function () {
 $(document).ready(function () {
 
     $('.sidenav').sidenav();
-    //$('.modal').modal();
+    $('.modal').modal();
     $.get("api/auth/check")
         .done(function (resp) {
 

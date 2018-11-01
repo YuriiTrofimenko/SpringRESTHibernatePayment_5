@@ -10,6 +10,7 @@ import org.tyaa.spring.rest.hibernate.payment.dao.CategoryHibernateDAO;
 import org.tyaa.spring.rest.hibernate.payment.dao.ProductHibernateDAO;
 import org.tyaa.spring.rest.hibernate.payment.entity.Category;
 import org.tyaa.spring.rest.hibernate.payment.entity.Product;
+import org.tyaa.spring.rest.hibernate.payment.model.ProductFilter;
 import org.tyaa.spring.rest.hibernate.payment.model.ProductRequest;
 import org.tyaa.spring.rest.hibernate.payment.model.ProductResponse;
 
@@ -67,11 +68,11 @@ public class ProductService {
         response.setData(products);
         return response;
     }
-    
-    public ProductResponse getFiltered() {
+
+    public ProductResponse getFiltered(ProductFilter filter) {
 
         ProductResponse response = new ProductResponse();
-        List<Product> products = productHibernateDAO.getAll();
+        List<Product> products = productHibernateDAO.getFiltered(filter);
         response.setStatus("success");
         response.setData(products);
         return response;

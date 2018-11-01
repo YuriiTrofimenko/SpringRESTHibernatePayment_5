@@ -62,40 +62,42 @@
     app.handler(function () {
         var $cartHref = $('#cart');
         return function () {
-            var populateArticlesGrid = function (_filterData) {
-                //Добавляем на место таблицы полосу бесконечного прогресса -
+            var populateProductsGrid = function (_filterData) {
+                //Добавляем на место таблицы анимацию бесконечного прогресса -
                 //пока будет ожидаться ответ сервера
                 preloaderShow();
+                //Если модель фильтрации не передана как аргумент функции,
+                //создаем ее
                 if (_filterData === undefined) {
+                    //Вносим в модель фильтрации текущее правило сортировки
+                    //результатов из представления
                     _filterData =
                         { 'sort': $('form#order-rules input[type=radio]:checked').attr('id') };
                 }
+                //Запрашиваем у контроллера отфильтрованные и отсортированные
+                //товары, передавая ему модель фильтрации
                 $.ajax({
-                    url: 'api/articles/get-filtered',
-                    type: "POST",
-                    data: _filterData,
-                    cache: false
+                    url: 'api/articles/get-filtered'
+                    , type: "POST"
+                    , data: JSON.stringify(_filterData)
+                    , dataType : "json"
+                    , contentType : "application/json"
                 }).done(function (resp) {
 
-                    if (resp === null) {
+                    var template;
+                    if (resp !== undefined && resp.status === 'success') {
 
-                        window.location = "/#signin";
-                    } else if (resp != null && resp.error != "") {
-
-                        alert("error: " + resp.error);
-                    } else {
-
-                        var template = Hogan.compile(
+                        template = Hogan.compile(
                             '{{#data}}'
                             + '<div class="col s12 m12 l6 xl4">'
                                 + '<div class="card hoverable">'
                                     + '<div class="card-image">'
-                                        + '<img src="{{image_base64}}">'
+                                        + '<img src="{{image}}">'
                                         + '<a id="{{id}}" class="btn-floating halfway-fab waves-effect waves-light red tooltipped" data-position="top" data-tooltip="Add one item to cart"><i class="material-icons">add</i></a>'
                                     + '</div>'
                                     + '<div class="card-content">'
                                         + '<span class="card-title">'
-                                        + '<div>{{title}} ({{Category.name}})</div>'
+                                        + '<div>{{name}} ({{category.name}})</div>'
                                         + '<div>${{price}}</div>'
                                         + '</span>'
                                         + '<p>{{description}}</p>'
@@ -106,46 +108,63 @@
                         );
                         //Заполняем шаблон данными и помещаем на веб-страницу
                         $('#article-grid-container').html(template.render(resp));
+                        //Активация всплывающих подсказок
                         $('.tooltipped').tooltip();
+                        //Обработчик клика по плавающей кнопке действия
+                        //"Добавить в корзину"
                         $(".btn-floating").unbind("click");
                         $('.btn-floating').click(function (ev) {
                             ev.preventDefault();
+                            //Считываем у кнопки, по которой кликнули, ИД товара
                             var artId = $(this).attr('id');
+                            //Отправляем асинхронный запрос о добавлении
+                            //товара в корзину
                             $.ajax({
-                                url: "api/articles/fromcart"
-                                , data: { 'artid': artId, 'type': "add" }
-                                , type: 'GET'
+                                url: "api/product/fromcart"
+                                , data: JSON.stringify({ 'artid': artId, 'type': "add" })
+                                , type: 'POST'
+                                , dataType : "json"
+                                , contentType : "application/json"
                             }).done(function (resp) {
-                                if (resp.error != "") {
-                                    alert("error: " + resp.error);
-                                } else {
+                                if (resp !== undefined && resp.status === 'success') {
                                     alert("One item added to the cart");
+                                } else {
+                                    alert("error: " + resp.error);
                                 }
-                            }).fail(function () {
+                            }).fail(function (jqXHR, textStatus, message) {
 
-                                alert("error");
+                                alert("Ошибка: " + message);
                             });
                         });
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    } else {
 
-                    alert("Ошибка: " + jqXHR);
+                        template = Hogan.compile(
+                                '<span>Error: {{message}}</span>'
+                            );
+                        //Заполняем шаблон сообщением об ошибке
+                        //и помещаем на веб-страницу
+                        //$('#products-container').html(template.render(resp));
+                    }
+                }).fail(function (jqXHR, textStatus, message) {
+
+                    alert("Ошибка: " + message);
                 }).always(function () {
 
                     preloaderHide();
                 });
             }
-
-            populateArticlesGrid();
-
+            //Вызов функции заполнения сетки товаров без передачи параметра,
+            //чтобы отобразить все товары с сортировкой по умолчанию
+            populateProductsGrid();
+            //Функция заполнения фильтра по категориям
             var populateCategoriesFilter = function () {
 
-                //Добавляем полосу бесконечного прогресса -
+                //Добавляем анимацию бесконечного прогресса -
                 //пока будет ожидаться ответ сервера
                 preloaderShow();
-
+                //Запрашиваем с сервера список всех категорий
                 $.ajax({
-                    url: '/api/categories/get-all',
+                    url: 'api/category/get-all',
                     type: "GET",
                     cache: false
                 }).done(function (resp) {
@@ -199,7 +218,7 @@
                 filterData["sort"] =
                     $('form#order-rules input[type=radio]:checked').attr('id');
 
-                populateArticlesGrid(filterData);
+                populateProductsGrid(filterData);
             };
 
             $(document).unbind('change');
