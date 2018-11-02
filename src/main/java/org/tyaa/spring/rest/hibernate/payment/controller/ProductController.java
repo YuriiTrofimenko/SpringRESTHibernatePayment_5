@@ -47,7 +47,7 @@ public class ProductController {
             return productService.getAll();
 	}
         
-        @GetMapping("/get-filtered")
+        @PostMapping("/get-filtered")
 	public ProductResponse getFiltered(@RequestBody ProductFilter filter) {
             return productService.getFiltered(filter);
 	}
@@ -62,26 +62,45 @@ public class ProductController {
             );
 	}
         
-        @GetMapping("/cart/add/{id}")
+        @PostMapping("/cart/add/{id}")
 	public AbstractResponse<List<CartItem>> addCartItemCount(@PathVariable("id") int id) {
-            
-            Cart cart =
-                (Cart) httpSession.getAttribute("CART");
-            CartItem currentCartItem = null;
-            Product product = productService.get(id);
-            
-            List<CartItem> currentCartItemList =
-                cart.getCartItems().stream().filter((i) -> {
-                        return i.id == id;
-                    }).collect(Collectors.toList());
-            if (currentCartItemList.size() > 0) {
-                currentCartItem = currentCartItemList.get(0);
-            } else {
-                currentCartItem = new CartItem(id, name, id);
+            Cart cart = (Cart) httpSession.getAttribute("CART");
+            if (cart == null) {
+                cart = new Cart();
             }
-            return productService.getCartItems(
-                    (Cart) httpSession
-                            .getAttribute("CART")
+            AbstractResponse<List<CartItem>> response =
+                    productService.changeCartItemCount(
+                    cart
+                    , id
+                    , CartItem.Action.ADD
             );
+            httpSession.setAttribute("CART", cart);
+            return response;
+	}
+        
+        @PostMapping("/cart/neg/{id}")
+	public AbstractResponse<List<CartItem>> negCartItemCount(@PathVariable("id") int id) {
+            Cart cart = (Cart) httpSession.getAttribute("CART");
+            AbstractResponse<List<CartItem>> response =
+                    productService.changeCartItemCount(
+                    cart
+                    , id
+                    , CartItem.Action.NEG
+            );
+            httpSession.setAttribute("CART", cart);
+            return response;
+	}
+        
+        @RequestMapping(value = "/cart/delete/{id}", method = RequestMethod.DELETE)
+	public AbstractResponse<List<CartItem>> deleteCartItem(@PathVariable("id") int id) {
+            Cart cart = (Cart) httpSession.getAttribute("CART");
+            AbstractResponse<List<CartItem>> response =
+                    productService.changeCartItemCount(
+                    cart
+                    , id
+                    , CartItem.Action.REM
+            );
+            httpSession.setAttribute("CART", cart);
+            return response;
 	}
 }

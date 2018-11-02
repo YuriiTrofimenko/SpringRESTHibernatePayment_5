@@ -10,6 +10,12 @@ package org.tyaa.spring.rest.hibernate.payment.model;
  * @author tyaa
  */
 public class CartItem {
+    
+    public enum Action {
+        ADD
+        , NEG
+        , REM
+    }
     public int id;
     public String name;
     public int count;

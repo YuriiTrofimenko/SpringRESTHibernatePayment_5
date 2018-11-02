@@ -15,7 +15,7 @@ var onSignIn = function (accountInfo) {
     $("a[href='#!signin']").css('display', 'none');
     $("a[href='#!signup']").css('display', 'none');
     
-    $("a[href='#!cart']").css('display', 'block');
+    $("a[href='#modal']").css('display', 'block');
 }
 
 var onSignOut = function () {
@@ -26,7 +26,7 @@ var onSignOut = function () {
     $("a[href='#!signin']").css('display', 'block');
     $("a[href='#!signup']").css('display', 'block');
     
-    $("a[href='#!cart']").css('display', 'none');
+    $("a[href='#modal']").css('display', 'none');
 
     $("#admin").html('');
 }

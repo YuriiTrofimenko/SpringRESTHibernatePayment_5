@@ -1,6 +1,7 @@
 package org.tyaa.spring.rest.hibernate.payment.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -91,21 +92,69 @@ public class ProductService {
     }
     
     public AbstractResponse<List<CartItem>> getCartItems(Cart cart) {
-            return new AbstractResponse<List<CartItem>>(){
-                @Override
-                public List<CartItem> getData() {
-                    return cart.getCartItems();
-                }
+        return new AbstractResponse<List<CartItem>>(){
+            @Override
+            public List<CartItem> getData() {
+                return cart.getCartItems();
+            }
 
-                @Override
-                public String getMessage() {
-                    return "Cart items";
-                }
+            @Override
+            public String getMessage() {
+                return "Cart items";
+            }
 
-                @Override
-                public String getStatus() {
-                    return "success";
-                }
-            };
-	}
+            @Override
+            public String getStatus() {
+                return "success";
+            }
+        };
+    }
+    
+    public AbstractResponse<List<CartItem>> changeCartItemCount(
+            Cart cart
+            , int id
+            , CartItem.Action action
+    ) {
+        
+        CartItem currentCartItem = null;
+        Product product = productHibernateDAO.get(id);
+
+        List<CartItem> currentCartItemList =
+            cart.getCartItems().stream().filter((i) -> {
+                    return i.id == id;
+                }).collect(Collectors.toList());
+        if (currentCartItemList.size() > 0) {
+            currentCartItem = currentCartItemList.get(0);
+        } else {
+            currentCartItem = new CartItem(id, product.getName(), 0);
+            cart.getCartItems().add(currentCartItem);
+        }
+        if (action == CartItem.Action.ADD) {
+            currentCartItem.count++;
+        } else if (action == CartItem.Action.NEG) {
+            currentCartItem.count--;
+            if (currentCartItem.count <= 0) {
+                cart.getCartItems().remove(currentCartItem);
+            }
+        } else if (action == CartItem.Action.REM) {
+            cart.getCartItems().remove(currentCartItem);
+        }
+        
+        return new AbstractResponse<List<CartItem>>(){
+            @Override
+            public List<CartItem> getData() {
+                return cart.getCartItems();
+            }
+
+            @Override
+            public String getMessage() {
+                return "Cart items";
+            }
+
+            @Override
+            public String getStatus() {
+                return "success";
+            }
+        };
+    }
 }

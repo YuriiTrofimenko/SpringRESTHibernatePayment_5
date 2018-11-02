@@ -60,7 +60,7 @@
     $('.sidenav').sidenav();
     $('.collapsible').collapsible();
     app.handler(function () {
-        var $cartHref = $('#cart');
+        var $cartHref = $('.cart');
         return function () {
             var populateProductsGrid = function (_filterData) {
                 //Добавляем на место таблицы анимацию бесконечного прогресса -
@@ -77,7 +77,7 @@
                 //Запрашиваем у контроллера отфильтрованные и отсортированные
                 //товары, передавая ему модель фильтрации
                 $.ajax({
-                    url: 'api/articles/get-filtered'
+                    url: 'api/product/get-filtered'
                     , type: "POST"
                     , data: JSON.stringify(_filterData)
                     , dataType : "json"
@@ -309,7 +309,7 @@
                             ev.preventDefault();
                             var artId = $(this).parent().parent().parent().children('th').text();
                             $.ajax({
-                                url: "api/articles/cart/neg/" + artId
+                                url: "api/product/cart/neg/" + artId
                                 , type: 'POST'
                             }).done(function (resp) {
 
@@ -336,11 +336,11 @@
                                     $(this).parent().parent().parent()
                                         .children('th').text();
                                 $.ajax({
-                                    url: "api/product/cart/delete" + artId
+                                    url: "api/product/cart/delete/" + artId
                                     , type: 'DELETE'
                                 }).done(function (resp) {
 
-                                    if (jqXHR, textStatus, errorThrown) {
+                                    if (resp !== undefined && resp.status === 'success') {
 
                                         showCart();
                                     } else {
