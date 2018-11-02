@@ -10,6 +10,9 @@ import org.tyaa.spring.rest.hibernate.payment.dao.CategoryHibernateDAO;
 import org.tyaa.spring.rest.hibernate.payment.dao.ProductHibernateDAO;
 import org.tyaa.spring.rest.hibernate.payment.entity.Category;
 import org.tyaa.spring.rest.hibernate.payment.entity.Product;
+import org.tyaa.spring.rest.hibernate.payment.model.AbstractResponse;
+import org.tyaa.spring.rest.hibernate.payment.model.Cart;
+import org.tyaa.spring.rest.hibernate.payment.model.CartItem;
 import org.tyaa.spring.rest.hibernate.payment.model.ProductFilter;
 import org.tyaa.spring.rest.hibernate.payment.model.ProductRequest;
 import org.tyaa.spring.rest.hibernate.payment.model.ProductResponse;
@@ -77,4 +80,32 @@ public class ProductService {
         response.setData(products);
         return response;
     }
+    
+    public AbstractResponse<Product> get(int id) {
+
+        AbstractResponse<Product> response = new AbstractResponse<Product>();
+        Product product = productHibernateDAO.get(id);
+        response.setStatus("success");
+        response.setData(product);
+        return response;
+    }
+    
+    public AbstractResponse<List<CartItem>> getCartItems(Cart cart) {
+            return new AbstractResponse<List<CartItem>>(){
+                @Override
+                public List<CartItem> getData() {
+                    return cart.getCartItems();
+                }
+
+                @Override
+                public String getMessage() {
+                    return "Cart items";
+                }
+
+                @Override
+                public String getStatus() {
+                    return "success";
+                }
+            };
+	}
 }

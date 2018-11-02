@@ -120,11 +120,8 @@
                             //Отправляем асинхронный запрос о добавлении
                             //товара в корзину
                             $.ajax({
-                                url: "api/product/fromcart"
-                                , data: JSON.stringify({ 'artid': artId, 'type': "add" })
+                                url: "api/product/cart/add/" + artId
                                 , type: 'POST'
-                                , dataType : "json"
-                                , contentType : "application/json"
                             }).done(function (resp) {
                                 if (resp !== undefined && resp.status === 'success') {
                                     alert("One item added to the cart");
@@ -169,10 +166,10 @@
                     cache: false
                 }).done(function (resp) {
 
-                    if (resp != undefined) {
-                        if (resp.error != "") {
-                            if (resp.error != undefined) {
-                                alert("error: " + resp.error);
+                    if (resp !== undefined) {
+                        if (resp.status !== "") {
+                            if (resp.status === 'error') {
+                                alert("error: " + resp.message);
                             }
                         } else {
 
@@ -241,16 +238,15 @@
             var showCart = function () {
 
                 $.ajax({
-                    url: "api/articles/cart?b=true"
+                    url: "api/product/cart/get-all"
                     , type: 'GET'
+                    , cache: false
                 }).done(function (resp) {
 
-                    if (resp.error != "") {
+                    var template;
+                    if (resp !== undefined && resp.status === 'success') {
 
-                        alert("error: " + resp.error);
-                    } else {
-
-                        var template = Hogan.compile(
+                        template = Hogan.compile(
                             '<table class="table">'
                             + '<thead>'
                             + '<tr>'
@@ -262,9 +258,9 @@
                             + '<tbody>'
                             + '{{#data}}'
                             + '<tr>'
-                            + '<th scope="row">{{ArticleId}}</th>'
-                            + '<td>{{ArticleName}}</td>'
-                            + '<td>{{Count}}</td>'
+                            + '<th scope="row">{{id}}</th>'
+                            + '<td>{{name}}</td>'
+                            + '<td>{{count}}</td>'
                             + '<td>'
                             + '<div class="row">'
                             + '<a class="col s3 offset-s1 waves-effect waves-light btn negBtn"><i class="material-icons">exposure_neg_1</i></a>'
@@ -275,7 +271,7 @@
                             + '</tr>'
                             + '{{/data}}'
                             + '{{^data}}'
-                            + '<span>Cart is empty</span>'
+                            + '<span>Your cart is empty</span>'
                             + '{{/data}}'
                             + '</tbody>'
                             + '</table>'
@@ -288,24 +284,22 @@
 
                             ev.preventDefault();
                             var artId = $(this).parent().parent().parent().children('th').text();
-                            console.log(artId);
+                            //console.log(artId);
                             $.ajax({
-                                url: "api/articles/fromcart"
-                                , data: { 'artid': artId, 'type': "add" }
-                                , type: 'GET'
+                                url: "api/product/cart/add/" + artId
+                                , type: 'POST'
                             }).done(function (resp) {
 
-                                if (resp.error != "") {
+                                if (resp !== undefined && resp.status === 'success') {
 
-                                    alert("error: " + resp.error);
-                                } else {
-                                    console.log("One item added to the cart");
-                                    //$cartHref.click();
                                     showCart();
+                                } else {
+                                    //
+                                    alert("error: " + resp.message);
                                 }
-                            }).fail(function () {
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
 
-                                alert("error");
+                                alert("error: " + jqXHR);
                             });
                         });
 
@@ -313,67 +307,65 @@
                         $('.negBtn').click(function (ev) {
 
                             ev.preventDefault();
-                            //var artId = $(this).attr('id');
                             var artId = $(this).parent().parent().parent().children('th').text();
-                            //console.log(artId);
                             $.ajax({
-                                url: "api/articles/fromcart"
-                                , data: { 'artid': artId, 'type': 'neg' }
-                                , type: 'GET'
+                                url: "api/articles/cart/neg/" + artId
+                                , type: 'POST'
                             }).done(function (resp) {
 
-                                if (resp.error != "") {
+                                if (resp !== undefined && resp.status === 'success') {
 
-                                    alert("error: " + resp.error);
-                                } else {
-                                    console.log("One item remove from cart");
-                                    //$cartHref.click();
                                     showCart();
+                                } else {
+                                    
+                                    alert("error: " + resp.message);
                                 }
-                            }).fail(function () {
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
 
-                                alert("error");
+                                alert("error: " + jqXHR);
                             });
                         });
 
                         $(".remBtn").unbind("click");
                         $('.remBtn').click(function (ev) {
 
-                            if (confirm("remove all items?")) {
+                            if (confirm("Remove all the items?")) {
 
                                 ev.preventDefault();
-                                //var artId = $(this).attr('id');
-                                var artId = $(this).parent().parent().parent().children('th').text();
-                                //console.log(artId);
+                                var artId =
+                                    $(this).parent().parent().parent()
+                                        .children('th').text();
                                 $.ajax({
-                                    url: "api/articles/fromcart"
-                                    , data: { 'artid': artId, 'type': 'rem' }
-                                    , type: 'GET'
+                                    url: "api/product/cart/delete" + artId
+                                    , type: 'DELETE'
                                 }).done(function (resp) {
 
-                                    if (resp.error != "") {
+                                    if (jqXHR, textStatus, errorThrown) {
 
-                                        alert("error: " + resp.error);
-                                    } else {
-                                        console.log("All items remove from cart");
-                                        //$cartHref.click();
                                         showCart();
+                                    } else {
+                                        alert("error: " + resp.message);
                                     }
-                                }).fail(function () {
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
 
-                                    alert("error");
+                                    alert("error: " + jqXHR);
                                 });
                             } else {
-                                alert("ok!");
+                                //alert("ok!");
                             }
                         });
-                    }
-                }).fail(function () {
+                    } else {
 
-                    alert("error");
+                        template = Hogan.compile(
+                                '<span>Error: {{message}}</span>'
+                            );
+                    }
+                }).fail(function (jqXHR, textStatus, message) {
+
+                    alert("Ошибка: " + jqXHR);
                 });
             };
-
+            //Привязка обработчика события - клик по кнопке "Показать корзину"
             $cartHref.unbind('click');
             $cartHref.click(showCart);
 
