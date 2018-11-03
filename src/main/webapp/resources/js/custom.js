@@ -1,3 +1,5 @@
+var signed = false;
+
 var preloaderHide = function () {
     $('.preloader-wrapper').css('display', 'none');
 }
@@ -15,7 +17,8 @@ var onSignIn = function (accountInfo) {
     $("a[href='#!signin']").css('display', 'none');
     $("a[href='#!signup']").css('display', 'none');
     
-    $("a[href='#modal']").css('display', 'block');
+    $(".cart").css('display', 'block');
+    signed = true;
 }
 
 var onSignOut = function () {
@@ -26,7 +29,8 @@ var onSignOut = function () {
     $("a[href='#!signin']").css('display', 'block');
     $("a[href='#!signup']").css('display', 'block');
     
-    $("a[href='#modal']").css('display', 'none');
+    $(".cart").css('display', 'none');
+    signed = false;
 
     $("#admin").html('');
 }

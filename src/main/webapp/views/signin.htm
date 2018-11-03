@@ -34,7 +34,7 @@
 <script>
     app.handler(function () {
 
-        //console.log(preloaderHide);
+        var $modal = $('#modal');
         return function (param) {
 
             //console.log(preloaderHide);
@@ -56,7 +56,9 @@
 
                     if (resp.status !== undefined && resp.status === "error") {
 
-                    	alert("Error: " + resp.status);
+                        var modalInstance = M.Modal.getInstance($modal);
+                        $('#modal').find('.modal-content').html("Error: " + resp.status);
+                        modalInstance.open();
                     } else {
 
                         $('#signin-form')[0].reset();

@@ -56,10 +56,11 @@ public class ProductController {
         
         @GetMapping("/cart/get-all")
 	public AbstractResponse<List<CartItem>> getCartItems() {
-            return productService.getCartItems(
-                    (Cart) httpSession
-                            .getAttribute("CART")
-            );
+            Cart cart = (Cart) httpSession.getAttribute("CART");
+            if (cart == null) {
+                cart = new Cart();
+            }
+            return productService.getCartItems(cart);
 	}
         
         @PostMapping("/cart/add/{id}")
@@ -81,6 +82,9 @@ public class ProductController {
         @PostMapping("/cart/neg/{id}")
 	public AbstractResponse<List<CartItem>> negCartItemCount(@PathVariable("id") int id) {
             Cart cart = (Cart) httpSession.getAttribute("CART");
+            if (cart == null) {
+                cart = new Cart();
+            }
             AbstractResponse<List<CartItem>> response =
                     productService.changeCartItemCount(
                     cart
@@ -94,6 +98,9 @@ public class ProductController {
         @RequestMapping(value = "/cart/delete/{id}", method = RequestMethod.DELETE)
 	public AbstractResponse<List<CartItem>> deleteCartItem(@PathVariable("id") int id) {
             Cart cart = (Cart) httpSession.getAttribute("CART");
+            if (cart == null) {
+                cart = new Cart();
+            }
             AbstractResponse<List<CartItem>> response =
                     productService.changeCartItemCount(
                     cart

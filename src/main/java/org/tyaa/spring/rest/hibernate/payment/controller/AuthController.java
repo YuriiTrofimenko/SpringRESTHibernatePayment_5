@@ -53,6 +53,7 @@ public class AuthController {
     @PostMapping("/signout")
     public AbstractResponse<Object> signout() {
             httpSession.removeAttribute("ACCOUNT_INFO");
+            httpSession.removeAttribute("CART");
             return service.signOut();
     }
 

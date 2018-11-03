@@ -59,6 +59,7 @@
 <script>
     $('.sidenav').sidenav();
     $('.collapsible').collapsible();
+    var $modal = $('#modal');
     app.handler(function () {
         var $cartHref = $('.cart');
         return function () {
@@ -93,7 +94,7 @@
                                 + '<div class="card hoverable">'
                                     + '<div class="card-image">'
                                         + '<img src="{{image}}">'
-                                        + '<a id="{{id}}" class="btn-floating halfway-fab waves-effect waves-light red tooltipped" data-position="top" data-tooltip="Add one item to cart"><i class="material-icons">add</i></a>'
+                                        + '<a id="{{id}}" class="btn-floating btn-large halfway-fab waves-effect waves-light red tooltipped" data-position="top" data-tooltip="Add one item to cart"><i class="large material-icons">add</i></a>'
                                     + '</div>'
                                     + '<div class="card-content">'
                                         + '<span class="card-title">'
@@ -114,24 +115,29 @@
                         //"Добавить в корзину"
                         $(".btn-floating").unbind("click");
                         $('.btn-floating').click(function (ev) {
+                            
                             ev.preventDefault();
-                            //Считываем у кнопки, по которой кликнули, ИД товара
-                            var artId = $(this).attr('id');
-                            //Отправляем асинхронный запрос о добавлении
-                            //товара в корзину
-                            $.ajax({
-                                url: "api/product/cart/add/" + artId
-                                , type: 'POST'
-                            }).done(function (resp) {
-                                if (resp !== undefined && resp.status === 'success') {
-                                    alert("One item added to the cart");
-                                } else {
-                                    alert("error: " + resp.error);
-                                }
-                            }).fail(function (jqXHR, textStatus, message) {
+                            if (signed) {
+                                //Считываем у кнопки, по которой кликнули, ИД товара
+                                var productId = $(this).attr('id');
+                                //Отправляем асинхронный запрос о добавлении
+                                //товара в корзину
+                                $.ajax({
+                                    url: "api/product/cart/add/" + productId
+                                    , type: 'POST'
+                                }).done(function (resp) {
+                                    if (resp !== undefined && resp.status === 'success') {
+                                        alert("One item added to Your cart");
+                                    } else {
+                                        alert("error: " + resp.error);
+                                    }
+                                }).fail(function (jqXHR, textStatus, message) {
 
-                                alert("Ошибка: " + message);
-                            });
+                                    alert("Ошибка: " + message);
+                                });
+                            } else {
+                                window.location = "#!signin";
+                            }
                         });
                     } else {
 
@@ -167,10 +173,8 @@
                 }).done(function (resp) {
 
                     if (resp !== undefined) {
-                        if (resp.status !== "") {
-                            if (resp.status === 'error') {
-                                alert("error: " + resp.message);
-                            }
+                        if (resp.status === 'error') {
+                            alert("error: " + resp.message);
                         } else {
 
                             var template = Hogan.compile(
@@ -277,16 +281,16 @@
                             + '</table>'
                         );
                         //Заполняем шаблон данными и помещаем на веб-страницу
-                        $('#modal .modal-content').html(template.render(resp));
+                        $modal.find('.modal-content').html(template.render(resp));
 
                         $(".plusBtn").unbind("click");
                         $('.plusBtn').click(function (ev) {
 
                             ev.preventDefault();
-                            var artId = $(this).parent().parent().parent().children('th').text();
-                            //console.log(artId);
+                            var productId = $(this).parent().parent().parent().children('th').text();
+                            //console.log(productId);
                             $.ajax({
-                                url: "api/product/cart/add/" + artId
+                                url: "api/product/cart/add/" + productId
                                 , type: 'POST'
                             }).done(function (resp) {
 
@@ -307,9 +311,9 @@
                         $('.negBtn').click(function (ev) {
 
                             ev.preventDefault();
-                            var artId = $(this).parent().parent().parent().children('th').text();
+                            var productId = $(this).parent().parent().parent().children('th').text();
                             $.ajax({
-                                url: "api/product/cart/neg/" + artId
+                                url: "api/product/cart/neg/" + productId
                                 , type: 'POST'
                             }).done(function (resp) {
 
@@ -332,11 +336,11 @@
                             if (confirm("Remove all the items?")) {
 
                                 ev.preventDefault();
-                                var artId =
+                                var productId =
                                     $(this).parent().parent().parent()
                                         .children('th').text();
                                 $.ajax({
-                                    url: "api/product/cart/delete/" + artId
+                                    url: "api/product/cart/delete/" + productId
                                     , type: 'DELETE'
                                 }).done(function (resp) {
 
