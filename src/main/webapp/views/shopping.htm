@@ -108,6 +108,8 @@
                             + '{{/data}}'
                         );
                         //Заполняем шаблон данными и помещаем на веб-страницу
+                        resp = JSON.parse(decodeURIComponent(JSON.stringify(resp)));
+                        console.log('resp-decoded', resp);
                         $('#article-grid-container').html(template.render(resp));
                         //Активация всплывающих подсказок
                         $('.tooltipped').tooltip();
