@@ -73,6 +73,8 @@ public abstract class AbstractHibernateGeneralizedDAO<T>
 		Root<T> root = criteriaQuery.from(entityBeanType);
 		criteriaQuery.select(root);
 		Query<T> query = getSession().createQuery(criteriaQuery);
+                // query.setFirstResult(0); SKIP
+                // query.setMaxResults(0); TAKE
 		return query.list();
 	}
 }

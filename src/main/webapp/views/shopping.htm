@@ -88,7 +88,7 @@
                     var template;
                     if (resp !== undefined && resp.status === 'success') {
 
-                        template = Hogan.compile(
+                        /* template = Hogan.compile(
                             '{{#data}}'
                             + '<div class="col s12 m12 l6 xl4">'
                                 + '<div class="card hoverable">'
@@ -106,11 +106,49 @@
                                 + '</div>'
                             + '</div>'
                             + '{{/data}}'
+                        ); */
+        
+                        var template = Hogan.compile(
+                            '<div class="col s12 m12 l6 xl4">'
+                                + '<div class="card hoverable">'
+                                    + '<div class="card-image">'
+                                        + '<img src="{{image}}">'
+                                        + '<a id="{{id}}" class="btn-floating btn-large halfway-fab waves-effect waves-light red tooltipped" data-position="top" data-tooltip="Add one item to cart"><i class="large material-icons">add</i></a>'
+                                    + '</div>'
+                                    + '<div class="card-content">'
+                                        + '<span class="card-title">'
+                                        + '<div>{{name}} ({{category.name}})</div>'
+                                        + '<div>${{price}}</div>'
+                                        + '</span>'
+                                        + '<p>{{description}}</p>'
+                                    + '</div>'
+                                + '</div>'
+                            + '</div>'
                         );
+        
                         //Заполняем шаблон данными и помещаем на веб-страницу
                         resp = JSON.parse(decodeURIComponent(JSON.stringify(resp)));
-                        console.log('resp-decoded', resp);
-                        $('#article-grid-container').html(template.render(resp));
+                        
+                        var colLimit = 3;
+                        console.log('width', $(document).width());
+                        if ($(document).width() <= 1200) {
+                            colLimit = 2;
+                        }
+                        console.log('limit', colLimit);
+                        $('#article-grid-container').html("");
+                        $.each(resp.data, function (index, value) {
+                            console.log('rows_len', $('#article-grid-container > .row:last-child').length);
+                            console.log('cards_len', $('#article-grid-container > .row:last-child > .col').length);
+                            if ($('#article-grid-container > .row:last-child').length === 0
+                                || $('#article-grid-container > .row:last-child > .col').length > colLimit - 1) {
+                                $('#article-grid-container').append("<div class='row'></div>");
+                            }
+                            $('#article-grid-container > .row:last-child')
+                                .append(template.render(value));
+                        });
+                        
+                        //console.log('resp-decoded', resp);
+                        //$('#article-grid-container').html(template.render(resp));
                         //Активация всплывающих подсказок
                         $('.tooltipped').tooltip();
                         //Обработчик клика по плавающей кнопке действия
